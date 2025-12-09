@@ -1,0 +1,61 @@
+/* Google Font einbinden */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap');
+
+/* Hintergrund der gesamten Seite */
+body {
+    background-color: #323232;
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+    color: white;
+}
+
+/* Tic-Tac-Toe Tabelle */
+.board {
+    border-collapse: collapse;
+    /* wichtig! sonst doppelte Linien */
+    margin: 20px;
+}
+
+/* Zellen */
+.board td {
+    width: 80px;
+    height: 80px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 40px;
+    color: white;
+
+    /* nur Innenlinien, keine Außenlinie */
+    border: 5px solid white;
+}
+
+/* Außenlinie entfernen */
+.board tr:first-child td {
+    border-top: none;
+}
+
+.board tr:last-child td {
+    border-bottom: none;
+}
+
+.board td:first-child {
+    border-left: none;
+}
+
+.board td:last-child {
+    border-right: none;
+}
+
+#Content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /*height: 100vh;*/
+    margin-top: 200px;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 20px;
+}
