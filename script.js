@@ -1,13 +1,7 @@
 let fields = [
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
+  null, null, null,
+  null, null, null,
+  null, null, null,
 ];
 
 const WINNING_COMBINATIONS = [
@@ -17,7 +11,6 @@ const WINNING_COMBINATIONS = [
 ];
 
 let currentPlayer = 'circle';
-
 
 function init() {
   render();
@@ -49,32 +42,41 @@ function render() {
 }
 
 function restartGame() {
-  fields = [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-  ];
+  fields = new Array(9).fill(null);
+  currentPlayer = 'circle';
+  // render() ustawi nowe onclick w komórkach
   render();
 }
 
 function handleClick(cell, index) {
-  if (fields[index] === null) {
-    fields[index] = currentPlayer;
-    cell.innerHTML = currentPlayer === 'circle' ? generateCircleSVG() : generateCrossSVG();
-    cell.onclick = null;
-    currentPlayer = currentPlayer === 'circle' ? 'cross' : 'circle';
+  // natychmiastowo ignoruj kliknięcia jeżeli gra już zakończona
+  if (getWinningCombination() !== null) return;
 
-    if (isGameFinished()) {
-      const winCombination = getWinningCombination();
-      drawWinningLine(winCombination);
-    }
+  // albo gdy pole już zajęte
+  if (fields[index] !== null) return;
+
+  // wykonaj ruch
+  fields[index] = currentPlayer;
+  cell.innerHTML = currentPlayer === 'circle' ? generateCircleSVG() : generateCrossSVG();
+  cell.onclick = null;
+
+  // sprawdź zwycięstwo
+  const winCombination = getWinningCombination();
+  if (winCombination) {
+    drawWinningLine(winCombination);
+    disableBoard();
+    return;
   }
+
+  // sprawdź remis (wszystkie pola zapełnione)
+  if (fields.every((f) => f !== null)) {
+    // tutaj możesz dodać komunikat o remisie, np. alert('Remis!')
+    disableBoard();
+    return;
+  }
+
+  // zmień gracza jeśli gra dalej trwa
+  currentPlayer = currentPlayer === 'circle' ? 'cross' : 'circle';
 }
 
 function isGameFinished() {
@@ -83,7 +85,7 @@ function isGameFinished() {
 
 function getWinningCombination() {
   for (let i = 0; i < WINNING_COMBINATIONS.length; i++) {
-    const [a, b, c] = WINNING_COMBINATIONS[i]; // [0, 1, 2]
+    const [a, b, c] = WINNING_COMBINATIONS[i];
     if (fields[a] === fields[b] && fields[b] === fields[c] && fields[a] !== null) {
       return WINNING_COMBINATIONS[i];
     }
@@ -91,6 +93,13 @@ function getWinningCombination() {
   return null;
 }
 
+function disableBoard() {
+  document.querySelectorAll('td').forEach(td => {
+    td.onclick = null;
+    // opcjonalnie: dodać klasę aby wizualnie zablokować interakcję
+    // td.classList.add('disabled');
+  });
+}
 
 function generateCircleSVG() {
   const color = '#00B0EF';
@@ -103,7 +112,6 @@ function generateCircleSVG() {
               </circle>
             </svg>`;
 }
-
 
 function generateCrossSVG() {
   const color = '#FFC000';
@@ -128,9 +136,9 @@ function generateCrossSVG() {
   return svgHtml;
 }
 
-
-
 function drawWinningLine(combination) {
+  if (!combination) return; // bezpieczeństwo - nic nie rób gdy null
+
   const lineColor = '#ffffff';
   const lineWidth = 5;
 
