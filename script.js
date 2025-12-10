@@ -44,38 +44,33 @@ function render() {
 function restartGame() {
   fields = new Array(9).fill(null);
   currentPlayer = 'circle';
-  // render() ustawi nowe onclick w komórkach
+  // render() will set new onclick in cells
   render();
 }
 
 function handleClick(cell, index) {
-  // natychmiastowo ignoruj kliknięcia jeżeli gra już zakończona
+  // ignore clicks if game over
   if (getWinningCombination() !== null) return;
-
-  // albo gdy pole już zajęte
   if (fields[index] !== null) return;
 
-  // wykonaj ruch
   fields[index] = currentPlayer;
   cell.innerHTML = currentPlayer === 'circle' ? generateCircleSVG() : generateCrossSVG();
   cell.onclick = null;
 
-  // sprawdź zwycięstwo
   const winCombination = getWinningCombination();
   if (winCombination) {
     drawWinningLine(winCombination);
     disableBoard();
+    showOverlay(currentPlayer === 'circle' ? "⭕ Kreis gewinnt!" : "✖️ Kreuz gewinnt!");
     return;
   }
 
-  // sprawdź remis (wszystkie pola zapełnione)
-  if (fields.every((f) => f !== null)) {
-    // tutaj możesz dodać komunikat o remisie, np. alert('Remis!')
+  if (fields.every(f => f !== null)) {
     disableBoard();
+    showOverlay("🤝 Unentschieden!");
     return;
   }
 
-  // zmień gracza jeśli gra dalej trwa
   currentPlayer = currentPlayer === 'circle' ? 'cross' : 'circle';
 }
 
@@ -96,48 +91,42 @@ function getWinningCombination() {
 function disableBoard() {
   document.querySelectorAll('td').forEach(td => {
     td.onclick = null;
-    // opcjonalnie: dodać klasę aby wizualnie zablokować interakcję
+    // optional: add a class to visually block the interaction
     // td.classList.add('disabled');
   });
 }
 
 function generateCircleSVG() {
   const color = '#00B0EF';
-  const width = 70;
-  const height = 70;
 
-  return `<svg width="${width}" height="${height}">
-              <circle cx="35" cy="35" r="30" stroke="${color}" stroke-width="5" fill="none">
-                <animate attributeName="stroke-dasharray" from="0 188.5" to="188.5 0" dur="0.2s" fill="freeze" />
-              </circle>
-            </svg>`;
+  return `
+    <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+      <circle cx="50" cy="50" r="40" stroke="${color}" stroke-width="8" fill="none">
+        <animate attributeName="stroke-dasharray" from="0 251" to="251 0" dur="0.2s" fill="freeze" />
+      </circle>
+    </svg>
+  `;
 }
 
 function generateCrossSVG() {
   const color = '#FFC000';
-  const width = 70;
-  const height = 70;
 
-  const svgHtml = `
-      <svg width="${width}" height="${height}">
-        <line x1="0" y1="0" x2="${width}" y2="${height}"
-          stroke="${color}" stroke-width="5">
-          <animate attributeName="x2" values="0; ${width}" dur="200ms" />
-          <animate attributeName="y2" values="0; ${height}" dur="200ms" />
-        </line>
-        <line x1="${width}" y1="0" x2="0" y2="${height}"
-          stroke="${color}" stroke-width="5">
-          <animate attributeName="x2" values="${width}; 0" dur="200ms" />
-          <animate attributeName="y2" values="0; ${height}" dur="200ms" />
-        </line>
-      </svg>
-    `;
-
-  return svgHtml;
+  return `
+    <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+      <line x1="20" y1="20" x2="80" y2="80" stroke="${color}" stroke-width="10">
+        <animate attributeName="x2" values="20; 80" dur="200ms" />
+        <animate attributeName="y2" values="20; 80" dur="200ms" />
+      </line>
+      <line x1="80" y1="20" x2="20" y2="80" stroke="${color}" stroke-width="10">
+        <animate attributeName="x2" values="80; 20" dur="200ms" />
+        <animate attributeName="y2" values="20; 80" dur="200ms" />
+      </line>
+    </svg>
+  `;
 }
 
 function drawWinningLine(combination) {
-  if (!combination) return; // bezpieczeństwo - nic nie rób gdy null
+  if (!combination) return; // security - do nothing when null
 
   const lineColor = '#ffffff';
   const lineWidth = 5;
@@ -164,4 +153,14 @@ function drawWinningLine(combination) {
   line.style.transform = `rotate(${lineAngle}rad)`;
   line.style.transformOrigin = `top left`;
   document.getElementById('content').appendChild(line);
+}
+
+function showOverlay(message) {
+  document.getElementById('overlay-message').innerText = message;
+  document.getElementById('overlay').classList.remove('hidden');
+}
+
+function closeOverlay() {
+  document.getElementById('overlay').classList.add('hidden');
+  restartGame();
 }

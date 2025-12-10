@@ -14,7 +14,12 @@
     <h1>Tic Tac Toe</h1>
 
     <div id="content"></div>
-
+    <div id="overlay" class="overlay hidden">
+        <div class="overlay-box">
+            <p id="overlay-message"></p>
+            <button onclick="closeOverlay()">OK</button>
+        </div>
+    </div>
     <div class="center mt-32">
         <button onclick="restartGame()">Spiel neu starten</button>
     </div>

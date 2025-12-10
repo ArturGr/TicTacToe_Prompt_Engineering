@@ -82,3 +82,95 @@ button {
 button:hover {
     background-color: #96cadd;
 }
+
+/* --- Overlay message --- */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.overlay.hidden {
+    display: none;
+}
+
+.overlay-box {
+    background: #444;
+    padding: 30px 40px;
+    border-radius: 10px;
+    color: white;
+    font-size: 24px;
+    border: 3px solid white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* <-- horizontal centering */
+    justify-content: center;
+    /* <-- vertical centering */
+    gap: 20px;
+    /* space between text and button */
+    text-align: center;
+    max-width: 90%;
+}
+
+.overlay-box button {
+    padding: 10px 25px;
+    font-size: 18px;
+    background: #00B0EF;
+    border: 2px solid white;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    width: 150px;
+    /* <-- always middle */
+}
+
+.overlay-box button:hover {
+    background: #96cadd;
+}
+
+/* --- Responsive board --- */
+table {
+    width: 90vw;
+    max-width: 400px;
+}
+
+td {
+    width: calc(90vw / 3);
+    height: calc(90vw / 3);
+    max-width: 130px;
+    max-height: 130px;
+}
+
+td svg {
+    width: 70%;
+    height: 70%;
+}
+
+@media (min-width: 600px) {
+    table {
+        width: 400px;
+    }
+
+    td {
+        width: 130px;
+        height: 130px;
+    }
+}
+
+#content {
+    margin-top: 150px;
+}
+
+@media (max-width: 480px) {
+    #content {
+        margin-top: 50px;
+    }
+}
